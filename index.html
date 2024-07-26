@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Leak Checker - Aries Online</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="password"], input[type="text"] {
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .loading {
+            font-size: 16px;
+            color: #007bff;
+        }
+        .toggle-password {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .toggle-password input {
+            margin-right: 10px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Check if your Password has been Leaked</h1>
+        <form id="password-form">
+            <label for="password">Enter Password:</label>
+            <input type="password" id="password" name="password" required>
+            <div class="toggle-password">
+                <input type="checkbox" id="show-password">
+                <label for="show-password">Show Password</label>
+            </div>
+            <button type="submit">Check</button>
+        </form>
+        <div id="result"></div>
+    </div>
+    <div class="footer">
+        Powered by <a href="https://api-aries.online" target="_blank">Aries Online</a>
+    </div>
+
+    <script>
+        const passwordInput = document.getElementById('password');
+        const showPasswordCheckbox = document.getElementById('show-password');
+
+        showPasswordCheckbox.addEventListener('change', function() {
+            if (showPasswordCheckbox.checked) {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
+        });
+
+        document.getElementById('password-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const password = passwordInput.value;
+            const apiToken = '1111-111-1111-1111-1111'; // API Token here
+            const url = `https://api.api-aries.online/v1/checkers/pwned-password/?password=${password}`;
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p class="loading">Checking...</p>';
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'APITOKEN': apiToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.found) {
+                    resultDiv.innerHTML = `<p style="color: red;">Password has been leaked! Used ${data.used_times} times.</p>`;
+                } else if (data.error) {
+                    resultDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
+                } else {
+                    resultDiv.innerHTML = `<p style="color: green;">Password not found in the leak database.</p>`;
+                }
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+        
