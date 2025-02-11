@@ -4,125 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Leak Checker - Aries Online</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f4f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            flex-direction: column;
-        }
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        h1 {
-            color: #333;
-        }
-        form {
-            margin-top: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-        input[type="password"], input[type="text"] {
-            padding: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #result {
-            margin-top: 20px;
-            font-size: 16px;
-        }
-        .loading {
-            font-size: 16px;
-            color: #007bff;
-        }
-        .toggle-password {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .toggle-password input {
-            margin-right: 10px;
-        }
-        .footer {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #888;
-        }
-        .footer a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        };
+    </script>
 </head>
-<body>
-    <div class="container">
-        <h1>Check if your Password has been Leaked</h1>
-        <form id="password-form">
-            <label for="password">Enter Password:</label>
-            <input type="password" id="password" name="password" required>
-            <div class="toggle-password">
-                <input type="checkbox" id="show-password">
-                <label for="show-password">Show Password</label>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen flex flex-col justify-center items-center">
+    <div class="container bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-md">
+        <h1 class="text-2xl font-bold text-center mb-4 dark:text-white">Check if your Password has been Leaked</h1>
+        <form id="password-form" class="space-y-4">
+            <label for="password" class="block font-medium">Enter Password:</label>
+            <input type="password" id="password" name="password" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input type="checkbox" id="show-password" class="mr-2">
+                    <label for="show-password" class="text-sm dark:text-gray-400">Show Password</label>
+                </div>
+                <button type="button" id="toggle-dark-mode" class="text-sm text-blue-500 hover:underline">Toggle Dark Mode</button>
             </div>
-            <button type="submit">Check</button>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">Check</button>
         </form>
-        <div id="result"></div>
+        <div id="result" class="mt-4 text-center"></div>
     </div>
-    <div class="footer">
-        Powered by <a href="https://api-aries.online" target="_blank">Aries Online</a>
+    <div class="footer mt-6 text-sm text-gray-600 dark:text-gray-400">
+        Powered by <a href="https://api-aries.online" target="_blank" class="text-blue-500 hover:underline">Aries Online</a>
     </div>
-
     <script>
         const passwordInput = document.getElementById('password');
         const showPasswordCheckbox = document.getElementById('show-password');
+        const toggleDarkModeButton = document.getElementById('toggle-dark-mode');
 
         showPasswordCheckbox.addEventListener('change', function() {
-            if (showPasswordCheckbox.checked) {
-                passwordInput.type = 'text';
-            } else {
-                passwordInput.type = 'password';
-            }
+            passwordInput.type = showPasswordCheckbox.checked ? 'text' : 'password';
+        });
+
+        toggleDarkModeButton.addEventListener('click', function() {
+            document.body.classList.toggle('dark');
         });
 
         document.getElementById('password-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const password = passwordInput.value;
-            const apiToken = '1111-111-1111-1111-1111'; // API Token here ##### find here: https://dashboard.api-aries.online/
+            const apiToken = '1111-111-1111-1111-1111'; // API Token - find here: https://dashboard.api-aries.online/
             const url = `https://api.api-aries.online/v1/checkers/pwned-password/?password=${password}`;
             
             const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = '<p class="loading">Checking...</p>';
-
+            resultDiv.innerHTML = '<p class="text-blue-500">Checking...</p>';
             fetch(url, {
                 method: 'GET',
                 headers: {
@@ -132,20 +61,17 @@
             .then(response => response.json())
             .then(data => {
                 if (data.found) {
-                    resultDiv.innerHTML = `<p style="color: red;">Password has been leaked! Used ${data.used_times} times.</p>`;
+                    resultDiv.innerHTML = `<p class="text-red-500">Password has been leaked! Used ${data.used_times} times.</p>`;
                 } else if (data.error) {
-                    resultDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
+                    resultDiv.innerHTML = `<p class="text-red-500">Error: ${data.error}</p>`;
                 } else {
-                    resultDiv.innerHTML = `<p style="color: green;">Password not found in the leak database.</p>`;
+                    resultDiv.innerHTML = `<p class="text-green-500">Password not found in the leak database.</p>`;
                 }
             })
             .catch(error => {
-                resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                resultDiv.innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`;
             });
         });
     </script>
 </body>
 </html>
-
-
-        
