@@ -29,7 +29,7 @@
         <div id="result" class="mt-4 text-center"></div>
     </div>
     <div class="footer mt-6 text-sm text-gray-600 dark:text-gray-400">
-        Powered by <a href="https://api-aries.online" target="_blank" class="text-blue-500 hover:underline">Aries Online</a>
+        Powered by <a href="https://api-aries.com" target="_blank" class="text-blue-500 hover:underline">Aries Online</a>
     </div>
     <script>
         const passwordInput = document.getElementById('password');
@@ -47,8 +47,8 @@
         document.getElementById('password-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const password = passwordInput.value;
-            const apiToken = '1111-111-1111-1111-1111'; // API Token - find here: https://dashboard.api-aries.online/
-            const url = `https://api.api-aries.online/v1/checkers/pwned-password/?password=${password}`;
+            const apiToken = '1111-111-1111-1111-1111'; // API Token - find here: https://dashboard.api-aries.com/
+            const url = `https://api.api-aries.com/v1/checkers/pwned-password/?password=${password}`;
             
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = '<p class="text-blue-500">Checking...</p>';
